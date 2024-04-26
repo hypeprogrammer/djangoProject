@@ -8,7 +8,7 @@ from .forms import CSVUploadForm
 from .models import Iris
 
 def home(request):
-    return render(request, 'mainPage.html')
+    return render(request, 'MainPage.html')
 
 def data(request):
     return render(request, 'Data.html')
