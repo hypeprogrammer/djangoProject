@@ -8,7 +8,7 @@ def home(request):
     return render(request, 'mainPage.html')
 
 @require_http_methods(["GET", "POST"])
-def upload_iris_csv(request):
+def upload_file(request):
     if request.method == 'POST':
         form = CSVUploadForm(request.POST, request.FILES)
         if form.is_valid():
@@ -30,4 +30,4 @@ def upload_iris_csv(request):
             return redirect('success_url')  # 성공 URL로 리디렉트
     else:
         form = CSVUploadForm()
-    return render(request, 'upload_iris_csv.html', {'form': form})
+    return render(request, 'Data.html', {'form': form})
