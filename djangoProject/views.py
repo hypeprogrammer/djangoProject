@@ -1,4 +1,7 @@
 import pandas as pd
+import csv
+
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.views.decorators.http import require_http_methods
 from .forms import CSVUploadForm
@@ -6,6 +9,9 @@ from .models import Iris
 
 def home(request):
     return render(request, 'mainPage.html')
+
+def data(request):
+    return render(request, 'Data.html')
 
 @require_http_methods(["GET", "POST"])
 def upload_file(request):

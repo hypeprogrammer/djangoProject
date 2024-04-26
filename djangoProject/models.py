@@ -9,3 +9,4 @@ class Iris(models.Model):
 
     def __str__(self):
         return f"{self.species} ({self.sepal_length}, {self.sepal_width}, {self.petal_length}, {self.petal_width})"
+
