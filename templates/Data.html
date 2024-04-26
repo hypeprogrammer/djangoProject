@@ -47,7 +47,7 @@
                 <div class="drop-area">
                     <form id="file-upload-form" class="upload" method="post" action="{% url 'upload' %}" enctype="multipart/form-data">
                         {% csrf_token %}
-                        <input type="file" id="fileElem" multiple accept=".csv" style="display:none" onchange="handleFiles(this.files)">
+                        <input type="file" id="fileElem" name="csv_file" multiple accept=".csv" style="display:none" onchange="handleFiles(this.files)">
                         <button type="button" class="btn btn-primary" id="fileSelect">Select Files</button>
                     </form>
                 </div>

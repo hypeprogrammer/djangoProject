@@ -1,11 +1,11 @@
 import pandas as pd
 import csv
+import os
 
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.views.decorators.http import require_http_methods
 from .forms import CSVUploadForm
-from .models import Iris
 
 def home(request):
     return render(request, 'MainPage.html')
@@ -13,27 +13,27 @@ def home(request):
 def data(request):
     return render(request, 'Data.html')
 
-@require_http_methods(["GET", "POST"])
-def upload_file(request):
-    if request.method == 'POST':
-        form = CSVUploadForm(request.POST, request.FILES)
-        if form.is_valid():
-            file = request.FILES['file']
-            # CSV 파일을 pandas DataFrame으로 읽기
-            df = pd.read_csv(file)
-            instances = [
-                Iris(
-                    sepal_length=row['sepal_length'],
-                    sepal_width=row['sepal_width'],
-                    petal_length=row['petal_length'],
-                    petal_width=row['petal_width'],
-                    species=row['species']
-                )
-                for index, row in df.iterrows()
-            ]
-            # bulk_create를 사용하여 한 번에 데이터베이스에 인스턴스 저장
-            Iris.objects.bulk_create(instances)
-            return redirect('success_url')  # 성공 URL로 리디렉트
-    else:
-        form = CSVUploadForm()
-    return render(request, 'Data.html', {'form': form})
+
+def upload(request):
+    # uploads 폴더가 있는지 확인하고, 없으면 생성
+    upload_dir = './uploads'
+    if not os.path.exists(upload_dir):
+        os.makedirs(upload_dir)
+
+    if request.method == 'POST' and 'csv_file' in request.FILES:
+        file = request.FILES['csv_file']
+        file_path = os.path.join(upload_dir, file.name)
+        with open(file_path, 'wb+') as destination:
+            for chunk in file.chunks():
+                destination.write(chunk)
+
+        # 파일 내용을 읽어 화면에 출력
+        data = []
+        with open(file_path, newline='', encoding='utf-8') as csvfile:
+            reader = csv.reader(csvfile)
+            for row in reader:
+                data.append(row)
+
+        return render(request, 'Data.html', {'data': data})
+
+    return render(request, 'Data.html')
