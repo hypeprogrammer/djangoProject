@@ -1,18 +1,21 @@
 import pandas as pd
 import csv
 import os
-
+from django.conf import settings
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.views.decorators.http import require_http_methods
 from .forms import CSVUploadForm
+
+import logging
+logger = logging.getLogger(__name__)
+
 
 def home(request):
     return render(request, 'MainPage.html')
 
 def data(request):
     return render(request, 'Data.html')
-
 
 def upload(request):
     # uploads 폴더가 있는지 확인하고, 없으면 생성
@@ -37,3 +40,12 @@ def upload(request):
         return render(request, 'Data.html', {'data': data})
 
     return render(request, 'Data.html')
+
+def data_view(request):
+    uploads_dir = os.path.join(settings.BASE_DIR, 'uploads')
+    try:
+        files = os.listdir(uploads_dir)
+    except FileNotFoundError:
+        files = []  # uploads 디렉토리가 존재하지 않을 경우 빈 리스트 반환
+
+    return render(request, 'Data.html', {'files': files})
